@@ -1,7 +1,13 @@
 import PyQt4.uic
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsApplication
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+import os.path
+import sys
+
+basepath = os.path.dirname(__file__)
+datapath = os.path.abspath(os.path.join(basepath, "..", "data"))
+
 
 class Window(QMainWindow):
 	def __init__(self, parent=None):
@@ -24,9 +30,13 @@ class Window(QMainWindow):
 
 
 if __name__ == "__main__":
-	app = QApplication([])
+	qgishome = os.environ['QGISHOME']
+	app = QgsApplication([], True)
+	QgsApplication.setPrefixPath(qgishome, True)
+	QgsApplication.initQgis()
 	window = Window()
-	window.loadLayer("C:\\dev\\python\\qgis-sandbox\\composition\\Cadastre.shp", "cadastre")
-	# window.loadLayer("../data/Roads.shp", "roads")
+	window.loadLayer(os.path.join(datapath, "Cadastre.shp"), "cadastre")
+	window.loadLayer(os.path.join(datapath, "Roads.shp"), "Roads")
 	window.show()
 	app.exec_()
+	QgsApplication.exitQgis()
