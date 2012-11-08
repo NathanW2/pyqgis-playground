@@ -9,5 +9,5 @@ If you would like to run any bits of the code first run ``setenv.bat`` in a OSGe
 
 Code so far:
 
-	* canvas/canvas.py - Example of loading a QgsMapCanvas into a QWidget
-	* composition/composition.py - Example of loading layers from a project file and exporting using QgsComposition. 
+	* **canvas/canvas.py** - Example of loading a QgsMapCanvas into a QWidget
+	* **composition/composition.py** - Example of loading layers from a project file and exporting using QgsComposition. 
