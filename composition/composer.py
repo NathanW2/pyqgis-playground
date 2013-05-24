@@ -7,8 +7,6 @@ import sys
 import xml.etree.ElementTree as ET
 
 app = QgsApplication([], True)
-
-QgsApplication.setPrefixPath("C:/OSGeo4w/apps/qgis-dev", True)
 QgsApplication.initQgis()
 
 project = "composer.qgs"
