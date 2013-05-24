@@ -12,9 +12,7 @@ datapath = os.path.abspath(os.path.join(basepath, "..", "data"))
 class Window(QMainWindow):
 	def __init__(self, parent=None):
 		QMainWindow.__init__(self, parent)
-
-		PyQt4.uic.loadUi('canvas.ui', self)
-
+		PyQt4.uic.loadUi(os.path.join(basepath,'canvas.ui'), self)
 		self.canvas.setCanvasColor(Qt.white)
 		self.canvas.enableAntiAliasing(True)
 
@@ -30,9 +28,7 @@ class Window(QMainWindow):
 
 
 if __name__ == "__main__":
-	qgishome = os.environ['QGISHOME']
 	app = QgsApplication([], True)
-	QgsApplication.setPrefixPath(qgishome, True)
 	QgsApplication.initQgis()
 	window = Window()
 	window.loadLayer(os.path.join(datapath, "Cadastre.shp"), "cadastre")
