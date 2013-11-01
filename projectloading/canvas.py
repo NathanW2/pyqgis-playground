@@ -1,5 +1,6 @@
 import PyQt4.uic
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsApplication, QgsPalLabeling
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsApplication, QgsPalLabeling, QgsProject
+from qgis.gui import QgsMapCanvasLayer
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import os.path
@@ -17,18 +18,24 @@ class Window(QMainWindow):
         self.canvas.enableAntiAliasing(True)
         pal = QgsPalLabeling()
         self.canvas.mapRenderer().setLabelingEngine(pal)
+        QgsProject.instance().readProject.connect(self.readProject)
 
-    def loadLayer(self, layer):
-        self.canvas.setExtent(layer.extent())
-        QgsMapLayerRegistry.instance().addMapLayer(layer)
-        layers = self.canvas.mapRenderer().layerSet()
-        layers.append(layer.id())
-        self.canvas.mapRenderer().setLayerSet(layers)
+    def readProject(self, doc):
+        nodes = doc.elementsByTagName("mapcanvas")
+        node = nodes.at(0)
+        self.canvas.mapRenderer().readXML(node)
+        layers = QgsMapLayerRegistry.instance().mapLayers()
+
+        def makelayer(layerid, visible):
+            layer = layers[layerid]
+            return QgsMapCanvasLayer(layer, visible)
+
+        layerset = [makelayer(layerid, visible) for layerid, visible in self.parser.layers()]
+        self.canvas.setLayerSet(layerset)
 
     def loadproject(self, filename):
-        parser = ProjectParser.fromFile(filename)
-        for layerid, visible, layer in parser.layers():
-            self.loadLayer(layer)
+        self.parser = ProjectParser.fromFile(filename)
+        QgsProject.instance().read(QFileInfo(filename))
 
 if __name__ == "__main__":
     print "HELLO WORLD"

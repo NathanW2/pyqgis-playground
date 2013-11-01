@@ -27,18 +27,14 @@ class ProjectParser(object):
         else:
             return None
         layer.readLayerXML(node)
-        print layer.id(), layer.isValid()
         return layer.id(), layer
 
     def _getLayers(self, node):
-        if not self._maplayers:
-            self._maplayers = dict(self.maplayers())
-
         filelist = node.elementsByTagName("legendlayerfile")
-        layerid = filelist.at(0).toElement().attribute('layerid')
-        print layerid
-        visible = node.attribute('visible')
-        return layerid, visible, self._maplayers[layerid]
+        layerfile = filelist.at(0).toElement()
+        layerid = layerfile.attribute('layerid')
+        visible = int(layerfile.attribute('visible'))
+        return layerid, bool(visible)
     
     def maplayers(self):
         layernodes = self.doc.elementsByTagName("maplayer")
